@@ -14,7 +14,7 @@ string Tree::relation(string relationName ){
 string Tree::find(string relation){
     return "Part A";
 }
-void remove(string name){
+void Tree::remove(string name){
     
 }
 void Tree::display(){
