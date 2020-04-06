@@ -21,9 +21,9 @@ TEST_CASE("The classic family - in a messy income order") {
   T.addFather("Yosef", "Yaakov")
    .addFather("Yaakov", "Isaac")
    .addFather("Isaac", "Avraham")
-   .addMother("Isaac", "Sara");
+   .addMother("Isaac", "Sara")
    .addMother("Yosef", "Rachel")
-   .addMother("Yaakov", "Rivca")
+   .addMother("Yaakov", "Rivca");
 }
 
 TEST_CASE("Incomplete family") {
@@ -42,5 +42,16 @@ TEST_CASE("Incomplete family") {
    .addFather("Perets", "Yehuda")
    .addMother("Perets", "Tamar")
    .addFather("Oved", "Boaz Ivtsan")  // test an existing parent override
-   .addFather("Nitsevet", "Adael")
+   .addFather("Nitsevet", "Adael");
+}
+
+TEST_CASE("Reccuring names") {
+  family::Tree T ("Shimoni");
+  T.addFather("Shimoni", "Shimon")
+   .addMother("Shimoni", "Dina")
+   .addFather("Shimon", "Yaakov")
+   .addMother("Shimon", "Lea")
+   .addFather("Dina", "Yaakov")
+   .addMother("Dina", "Lea")
+   .addMother("Lea", "Lea"); // Just for checking
 }
