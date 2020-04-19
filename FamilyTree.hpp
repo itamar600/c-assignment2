@@ -23,9 +23,9 @@ namespace family {
         mother=NULL;
       }
     public:
-    string getName() { return name;  }
-    // Tree& getFather() { return father;  }
-    // Tree& getMother() { return mother;  }
+    string getName() { return this->name;  }
+    Tree* getFather() { return this->father;  }
+    Tree* getMother() { return this->mother;  }
     Tree& addFather(string childName,string fatherName);
     Tree& addMother(string childName,string motherName);
     string relation(string relationName );
