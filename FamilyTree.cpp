@@ -5,7 +5,9 @@
 using namespace family;
 
 Tree& Tree::addFather(string childName,string fatherName){
+    //the child was found
     if(this->name == string(childName)){
+        //cant changing father name
         if(this->father != NULL)
             throw std::runtime_error("Father exists");
         Tree* father = new Tree(fatherName);
@@ -40,6 +42,7 @@ string Tree::find(string relation){
     return "Part A";
 }
 void recRemove(Tree* node){
+    //came to leaf
     if(node->getFather()== NULL && node->getMother() == NULL){
         delete node;
         return;
@@ -51,6 +54,8 @@ void recRemove(Tree* node){
     return;
 }
 Tree* findToRemove(Tree* root ,string name){
+    //searching the child of who we want to remove
+    //for changing the iterator for the parent to NULL
     if((root->getFather() != NULL && root->getFather()->getName() == string(name)) || 
     (root->getMother() != NULL && root->getMother()->getName() == string(name)))
         return root;
@@ -58,27 +63,31 @@ Tree* findToRemove(Tree* root ,string name){
         return findToRemove(root->getFather(), name);
     if(root->getMother()!=NULL)
         return findToRemove(root->getMother(), name);
+    // The name not in the family tree
     return NULL;
 }
 void Tree::remove(string name){
     if(this->getName() == string(name)){
         throw std::runtime_error("Can't delete root!");
     }
-    Tree* sunRemove= findToRemove(this, name);
-    if(sunRemove == NULL)
+    Tree* childRemove= findToRemove(this, name);
+    if(childRemove == NULL)
         throw std::runtime_error("The name not found!");
-    if(sunRemove->getFather()->getName() == string(name)){
-        recRemove(sunRemove->getFather());
-        sunRemove->father=NULL;
+    //If is the father that need to be deleted
+    if(childRemove->getFather()->getName() == string(name)){
+        recRemove(childRemove->getFather());
+        childRemove->father=NULL;
         return;
     }
-    if(sunRemove->getMother()->getName() == string(name)){
-        recRemove(sunRemove->getMother());
-        sunRemove->mother=NULL;
+    //If is the mother.. 
+    if(childRemove->getMother()->getName() == string(name)){
+        recRemove(childRemove->getMother());
+        childRemove->mother=NULL;
         return;
     }
 
 }
+//This algorithm i took from https://www.geeksforgeeks.org/print-binary-tree-2-dimensions/
 void recDisplay(Tree* root, int space){
     if(root == NULL)
         return;
@@ -94,12 +103,5 @@ void recDisplay(Tree* root, int space){
 
 void Tree::display(){
     recDisplay(this, 0);
-    // string display= string(this->name);
-    // Tree* iter=this;
-    // while(iter->father!=NULL){
-    //     display+="\n   |\n   |\n"+ iter->father->name;
-    //     iter=this->father;
-    // }
-    // cout << display << endl;  
 }
 
