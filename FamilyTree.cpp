@@ -1,11 +1,13 @@
 #include <string>
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 #include "FamilyTree.hpp"
 #define COUNT 10
 using namespace family;
 
 Tree& Tree::addFather(string childName,string fatherName){
     if(this->name == string(childName)){
+        if(this->father != NULL)
+            throw std::runtime_error("Father exists");
         Tree* father = new Tree(fatherName);
         this->father= father;
         return *this;
@@ -16,8 +18,11 @@ Tree& Tree::addFather(string childName,string fatherName){
         this->mother->addFather(childName,fatherName);
     return *this;
 }
+
 Tree& Tree::addMother(string childName,string motherName){
     if(this->name == string(childName)){
+        if(this->mother != NULL)
+            throw std::runtime_error("Mother exists");
         Tree* mother = new Tree(motherName);
         this->mother= mother;
         return *this;
@@ -34,8 +39,45 @@ string Tree::relation(string relationName ){
 string Tree::find(string relation){
     return "Part A";
 }
+void recRemove(Tree* node){
+    if(node->getFather()== NULL && node->getMother() == NULL){
+        delete node;
+        return;
+    }
+    if(node->getFather()!= NULL)
+        recRemove(node->getFather());
+    if(node->getMother()!= NULL)
+        recRemove(node->getMother());
+    return;
+}
+Tree* findToRemove(Tree* root ,string name){
+    if((root->getFather() != NULL && root->getFather()->getName() == string(name)) || 
+    (root->getMother() != NULL && root->getMother()->getName() == string(name)))
+        return root;
+    if(root->getFather()!= NULL)
+        return findToRemove(root->getFather(), name);
+    if(root->getMother()!=NULL)
+        return findToRemove(root->getMother(), name);
+    return NULL;
+}
 void Tree::remove(string name){
-    
+    if(this->getName() == string(name)){
+        throw std::runtime_error("Can't delete root!");
+    }
+    Tree* sunRemove= findToRemove(this, name);
+    if(sunRemove == NULL)
+        throw std::runtime_error("The name not found!");
+    if(sunRemove->getFather()->getName() == string(name)){
+        recRemove(sunRemove->getFather());
+        sunRemove->father=NULL;
+        return;
+    }
+    if(sunRemove->getMother()->getName() == string(name)){
+        recRemove(sunRemove->getMother());
+        sunRemove->mother=NULL;
+        return;
+    }
+
 }
 void recDisplay(Tree* root, int space){
     if(root == NULL)

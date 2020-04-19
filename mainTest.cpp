@@ -12,7 +12,14 @@ int main() {
 	 .addFather("Isaac", "Avraham")
 	 .addFather("Avraham", "Terah");
 
-	T.display();  
+	T.display();
+    T.remove("Terah");
+    T.display(); 
+    T.remove("Rivka");
+    T.display();
+    T.remove("Rachel");
+    T.display();
+    //T.remove("Yosef"); 
     
     family::Tree T1 ("David"); 
     T1.addMother("David", "Nitsevet")
@@ -28,11 +35,13 @@ int main() {
    .addFather("Hetsron", "Perets")
    .addFather("Perets", "Yehuda")
    .addMother("Perets", "Tamar")
-   //.addFather("Oved", "Boaz Ivtsan")  // test an existing parent override
+   .addFather("Oved", "Boaz Ivtsan")  // test an existing parent override
    .addFather("Nitsevet", "Adael");
    
    T1.display();                      // displays the tree in a human-friendly format.
 
+   T1.remove("Hetsron");
+   T1.display();
 	// cout << T.relation("Yaakov") << endl;  // prints "father"
 	// cout << T.relation("Rachel") << endl;  // prints "mother"
 	// cout << T.relation("Rivka") << endl;  // prints "grandmother"
