@@ -73,15 +73,29 @@ void Tree::remove(string name){
     Tree* childRemove= findToRemove(this, name);
     if(childRemove == NULL)
         throw std::runtime_error("The name not found!");
+    //This variable is for deletion, because if the name that need 
+    //to remove is a leaf, so recRemove delete him, but if not we
+    //need to delete him hear.
+    bool isLeaf=true;
     //If is the father that need to be deleted
     if(childRemove->getFather()->getName() == string(name)){
+        if(childRemove->getFather()->getMother()!= NULL
+        || childRemove->getFather()->getFather()!= NULL)
+            isLeaf=false;
         recRemove(childRemove->getFather());
+        if(!isLeaf)
+            delete(childRemove->getFather());
         childRemove->father=NULL;
         return;
     }
     //If is the mother.. 
     if(childRemove->getMother()->getName() == string(name)){
+        if(childRemove->getMother()->getMother()!= NULL
+        || childRemove->getMother()->getFather()!= NULL)
+            isLeaf=false;
         recRemove(childRemove->getMother());
+        if(!isLeaf)
+            delete(childRemove->getMother());
         childRemove->mother=NULL;
         return;
     }

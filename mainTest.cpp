@@ -35,7 +35,7 @@ int main() {
    .addFather("Hetsron", "Perets")
    .addFather("Perets", "Yehuda")
    .addMother("Perets", "Tamar")
-   .addFather("Oved", "Boaz Ivtsan")  // test an existing parent override
+   //.addFather("Oved", "Boaz Ivtsan")  // test an existing parent override
    .addFather("Nitsevet", "Adael");
    
    T1.display();                      // displays the tree in a human-friendly format.
