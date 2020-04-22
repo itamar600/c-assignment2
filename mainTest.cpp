@@ -11,7 +11,7 @@ int main() {
 	 .addMother("Yaakov", "Rivka")
 	 .addFather("Isaac", "Avraham")
 	 .addFather("Avraham", "Terah");
-
+    cout << T.relation("Rivka");
 	T.display();
     T.remove("Terah");
     T.display(); 

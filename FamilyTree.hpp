@@ -8,20 +8,20 @@ using namespace std;
 namespace family {
   class Tree{
     string name;
-    string relation;
+    string rel;
     Tree* father;
     Tree* mother;
       
     public:
     Tree(){
         name="";
-        relation="";  
+        rel="";  
         father=NULL;
         mother=NULL; 
       }
     Tree(string name){
         this->name=name;
-        relation="";
+        rel="me";
         father=NULL;
         mother=NULL;
       }

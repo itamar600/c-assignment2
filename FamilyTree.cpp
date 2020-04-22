@@ -12,26 +12,26 @@ Tree& Tree::addFather(string childName,string fatherName){
             throw std::runtime_error("Father exists");
         Tree* father = new Tree(fatherName);
         this->father= father;
-        if(this->relation==string("me"))
-            this->father->relation="father";
-        else if(this->relation==string("father"))
-                this->father->relation="grandfather";
-        else if(this->relation==string("mother"))
-                this->father->relation="grandfather";
-        else if(this->relation==string("grandfather"))
-                this->father->relation="great-grandfather";
-        else if(this->relation==string("grandmother"))
-                this->father->relation="great-grandfather";
-        else if(this->relation.find("grandfather")!=this->relation.npos())
-                this->father->relation="great-"+this->relation;
-        else if(this->relation.find("grandmother")!=this->relation.npos()){
-                size_t pos=this->relation.find("grandmother");
-                char rel[pos+1];
-                this->relation.copy(rel,pos+1,pos);
-                this->father->relation="great-";
+        if(this->rel==string("me"))
+            this->father->rel="father";
+        else if(this->rel==string("father"))
+                this->father->rel="grandfather";
+        else if(this->rel==string("mother"))
+                this->father->rel="grandfather";
+        else if(this->rel==string("grandfather"))
+                this->father->rel="great-grandfather";
+        else if(this->rel==string("grandmother"))
+                this->father->rel="great-grandfather";
+        else if(this->rel.find("grandfather")!=this->rel.npos)
+                this->father->rel="great-"+this->rel;
+        else if(this->rel.find("grandmother")!=this->rel.npos){
+                size_t pos=this->rel.find("grandmother");
+                char rela[pos+1];
+                this->rel.copy(rela,pos+1,pos);
+                this->father->rel="great-";
                 for(int i=0; i<pos+1; i++)
-                    this->relation.append(rel[i]);
-                this->father->relation+="grandfather";
+                    this->rel+=rela[i];
+                this->father->rel+="grandfather";
         }
         return *this;
     }
@@ -48,26 +48,26 @@ Tree& Tree::addMother(string childName,string motherName){
             throw std::runtime_error("Mother exists");
         Tree* mother = new Tree(motherName);
         this->mother= mother;
-        if(this->relation==string("me"))
-            this->mother->relation="mother";
-        else if(this->relation==string("father"))
-            this->mother->relation="grandmother";
-        else if(this->relation==string("mother"))
-            this->mother->relation="grandmother";
-        else if(this->relation==string("grandfather"))
-            this->mother->relation="great-grandmother";
-        else if(this->relation==string("grandmother"))
-            this->mother->relation="great-grandmother";
-        else if(this->relation.find("grandmother")!=this->relation.npos())
-                this->father->relation="great-"+this->relation;
-        else if(this->relation.find("grandmfather")!=this->relation.npos()){
-                size_t pos=this->relation.find("grandfather");
-                char rel[pos+1];
-                this->relation.copy(rel,pos+1,pos);
-                this->father->relation="great-";
+        if(this->rel==string("me"))
+            this->mother->rel="mother";
+        else if(this->rel==string("father"))
+            this->mother->rel="grandmother";
+        else if(this->rel==string("mother"))
+            this->mother->rel="grandmother";
+        else if(this->rel==string("grandfather"))
+            this->mother->rel="great-grandmother";
+        else if(this->rel==string("grandmother"))
+            this->mother->rel="great-grandmother";
+        else if(this->rel.find("grandmother")!=this->rel.npos)
+                this->father->rel="great-"+this->rel;
+        else if(this->rel.find("grandmfather")!=this->rel.npos){
+                size_t pos=this->rel.find("grandfather");
+                char rela[pos+1];
+                this->rel.copy(rela,pos+1,pos);
+                this->father->rel="great-";
                 for(int i=0; i<pos+1; i++)
-                    this->relation.append(rel[i]);
-                this->father->relation+="grandmother";
+                    this->rel+=rela[i];
+                this->father->rel+="grandmother";
         }
     }
     if(this->father != NULL)
@@ -77,12 +77,31 @@ Tree& Tree::addMother(string childName,string motherName){
     return *this;
 }
 
-void Tree::setRelation(string relation){
-    this->relation=relation;
+// void Tree::setRelation(string relation){
+//     this->re=relation;
+// }
+
+Tree* findToRelation(Tree* root ,string name){
+
+    if(root->getName() == string(name)) 
+        return root;
+    if(root->getFather()!= NULL){
+        Tree* temp=findToRelation(root->getFather(), name);
+        if(temp!=NULL)
+            return temp; 
+    }
+    if(root->getMother()!=NULL)
+        return findToRelation(root->getMother(), name);
+    // The name not in the family tree
+    return NULL;
 }
 
+
 string Tree::relation(string relationName ){
-    return "Part A";
+    Tree* temp=findToRelation(this, relationName);
+    if(temp==NULL)
+        throw std::runtime_error("the name doesnt exist!");
+    return temp->rel;
 }
 
 string Tree::find(string relation){
@@ -118,8 +137,11 @@ Tree* findToRemove(Tree* root ,string name){
     if((root->getFather() != NULL && root->getFather()->getName() == string(name)) || 
     (root->getMother() != NULL && root->getMother()->getName() == string(name)))
         return root;
-    if(root->getFather()!= NULL)
-        return findToRemove(root->getFather(), name);
+    if(root->getFather()!= NULL){
+        Tree* temp=findToRemove(root->getFather(), name);
+        if(temp!=NULL)
+            return temp;
+    }
     if(root->getMother()!=NULL)
         return findToRemove(root->getMother(), name);
     // The name not in the family tree
