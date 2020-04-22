@@ -12,6 +12,7 @@ int main() {
 	 .addFather("Isaac", "Avraham")
 	 .addFather("Avraham", "Terah");
     cout << T.relation("Rivka");
+    cout << T.find("grandmother"); 
 	T.display();
     T.remove("Terah");
     T.display(); 

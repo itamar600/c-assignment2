@@ -31,7 +31,7 @@ namespace family {
     Tree* getMother() { return this->mother;  }
     Tree& addFather(string childName,string fatherName);
     Tree& addMother(string childName,string motherName);
-    void setRelation(string relation);
+    string getRelation(){return this->rel;};
     string relation(string relationName );
     string find(string relation);
     void remove(string name);

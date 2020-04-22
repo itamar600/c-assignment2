@@ -103,20 +103,25 @@ string Tree::relation(string relationName ){
         throw std::runtime_error("the name doesnt exist!");
     return temp->rel;
 }
+Tree* findToFind(Tree* root ,string relation){
 
-string Tree::find(string relation){
-    if(relation.find("great") == relation.npos){
-        if(relation==string("me"))
-            return this->name;
-        else if(relation==string("father"))
-            return this->father->name;
-        else if(relation==string("mother"))
-            return this->mother->name;
-        else if(relation==string("grandmother"))
-            return this->mother->name;
-        
+    if(root->getRelation() == string(relation)) 
+        return root;
+     if(root->getFather()!= NULL){
+        Tree* temp=findToFind(root->getFather(), relation);
+        if(temp!=NULL)
+            return temp; 
     }
-    return "Part A";
+    if(root->getMother()!=NULL)
+        return findToFind(root->getMother(), relation);
+    // The name not in the family tree
+    return NULL;
+}
+string Tree::find(string relation){
+    Tree* temp=findToFind(this,relation);
+    if(temp == NULL)
+        throw std::runtime_error("the relation doesnt exist!");
+    return temp->name;
 }
 void recRemove(Tree* node){
     //came to leaf
