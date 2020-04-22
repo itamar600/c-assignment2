@@ -12,6 +12,27 @@ Tree& Tree::addFather(string childName,string fatherName){
             throw std::runtime_error("Father exists");
         Tree* father = new Tree(fatherName);
         this->father= father;
+        if(this->relation==string("me"))
+            this->father->relation="father";
+        else if(this->relation==string("father"))
+                this->father->relation="grandfather";
+        else if(this->relation==string("mother"))
+                this->father->relation="grandfather";
+        else if(this->relation==string("grandfather"))
+                this->father->relation="great-grandfather";
+        else if(this->relation==string("grandmother"))
+                this->father->relation="great-grandfather";
+        else if(this->relation.find("grandfather")!=this->relation.npos())
+                this->father->relation="great-"+this->relation;
+        else if(this->relation.find("grandmother")!=this->relation.npos()){
+                size_t pos=this->relation.find("grandmother");
+                char rel[pos+1];
+                this->relation.copy(rel,pos+1,pos);
+                this->father->relation="great-";
+                for(int i=0; i<pos+1; i++)
+                    this->relation.append(rel[i]);
+                this->father->relation+="grandfather";
+        }
         return *this;
     }
     if(this->father != NULL)
@@ -27,7 +48,27 @@ Tree& Tree::addMother(string childName,string motherName){
             throw std::runtime_error("Mother exists");
         Tree* mother = new Tree(motherName);
         this->mother= mother;
-        return *this;
+        if(this->relation==string("me"))
+            this->mother->relation="mother";
+        else if(this->relation==string("father"))
+            this->mother->relation="grandmother";
+        else if(this->relation==string("mother"))
+            this->mother->relation="grandmother";
+        else if(this->relation==string("grandfather"))
+            this->mother->relation="great-grandmother";
+        else if(this->relation==string("grandmother"))
+            this->mother->relation="great-grandmother";
+        else if(this->relation.find("grandmother")!=this->relation.npos())
+                this->father->relation="great-"+this->relation;
+        else if(this->relation.find("grandmfather")!=this->relation.npos()){
+                size_t pos=this->relation.find("grandfather");
+                char rel[pos+1];
+                this->relation.copy(rel,pos+1,pos);
+                this->father->relation="great-";
+                for(int i=0; i<pos+1; i++)
+                    this->relation.append(rel[i]);
+                this->father->relation+="grandmother";
+        }
     }
     if(this->father != NULL)
         this->father->addMother(childName,motherName);
@@ -35,23 +76,41 @@ Tree& Tree::addMother(string childName,string motherName){
         this->mother->addMother(childName,motherName);
     return *this;
 }
+
+void Tree::setRelation(string relation){
+    this->relation=relation;
+}
+
 string Tree::relation(string relationName ){
     return "Part A";
 }
+
 string Tree::find(string relation){
+    if(relation.find("great") == relation.npos){
+        if(relation==string("me"))
+            return this->name;
+        else if(relation==string("father"))
+            return this->father->name;
+        else if(relation==string("mother"))
+            return this->mother->name;
+        else if(relation==string("grandmother"))
+            return this->mother->name;
+        
+    }
     return "Part A";
 }
 void recRemove(Tree* node){
     //came to leaf
-    if(node->getFather()== NULL && node->getMother() == NULL){
-        delete node;
-        return;
-    }
+    // if(node->getFather()== NULL && node->getMother() == NULL){
+    //     delete node;
+    //     return;
+    // }
     if(node->getFather()!= NULL)
         recRemove(node->getFather());
     if(node->getMother()!= NULL)
         recRemove(node->getMother());
-    return;
+    //return;
+    delete node;
 }
 Tree* findToRemove(Tree* root ,string name){
     //searching the child of who we want to remove
@@ -76,26 +135,26 @@ void Tree::remove(string name){
     //This variable is for deletion, because if the name that need 
     //to remove is a leaf, so recRemove delete him, but if not we
     //need to delete him hear.
-    bool isLeaf=true;
+    // bool isLeaf=true;
     //If is the father that need to be deleted
     if(childRemove->getFather()->getName() == string(name)){
-        if(childRemove->getFather()->getMother()!= NULL
-        || childRemove->getFather()->getFather()!= NULL)
-            isLeaf=false;
+        // if(childRemove->getFather()->getMother()!= NULL
+        // || childRemove->getFather()->getFather()!= NULL)
+        //     isLeaf=false;
         recRemove(childRemove->getFather());
-        if(!isLeaf)
-            delete(childRemove->getFather());
+        // if(!isLeaf)
+        //     delete(childRemove->getFather());
         childRemove->father=NULL;
         return;
     }
     //If is the mother.. 
     if(childRemove->getMother()->getName() == string(name)){
-        if(childRemove->getMother()->getMother()!= NULL
-        || childRemove->getMother()->getFather()!= NULL)
-            isLeaf=false;
+        // if(childRemove->getMother()->getMother()!= NULL
+        // || childRemove->getMother()->getFather()!= NULL)
+        //     isLeaf=false;
         recRemove(childRemove->getMother());
-        if(!isLeaf)
-            delete(childRemove->getMother());
+        // if(!isLeaf)
+        //     delete(childRemove->getMother());
         childRemove->mother=NULL;
         return;
     }

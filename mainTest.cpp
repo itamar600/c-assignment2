@@ -42,6 +42,9 @@ int main() {
 
    T1.remove("Hetsron");
    T1.display();
+   string str="abc";
+   cout << str.find("f") << "   "<< str.npos <<  endl;
+
 	// cout << T.relation("Yaakov") << endl;  // prints "father"
 	// cout << T.relation("Rachel") << endl;  // prints "mother"
 	// cout << T.relation("Rivka") << endl;  // prints "grandmother"
