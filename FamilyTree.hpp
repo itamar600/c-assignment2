@@ -11,6 +11,7 @@ namespace family {
     string rel;
     Tree* father;
     Tree* mother;
+    static bool ifAdd;
       
     public:
     Tree(){
@@ -25,10 +26,15 @@ namespace family {
         father=NULL;
         mother=NULL;
       }
+    ~Tree(){
+      delete this;
+}
     public:
     string getName() { return this->name;  }
     Tree* getFather() { return this->father;  }
     Tree* getMother() { return this->mother;  }
+    void recAddFather(string childName,string fatherName, bool* ifAdd);
+    void recAddMother(string childName,string motherName, bool* ifAdd);
     Tree& addFather(string childName,string fatherName);
     Tree& addMother(string childName,string motherName);
     string getRelation(){return this->rel;};
