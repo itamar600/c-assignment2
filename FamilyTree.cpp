@@ -4,27 +4,13 @@
 #define COUNT 10
 using namespace family;
 
-
 Tree& Tree::addFather(string childName,string fatherName){
-    if(relation(childName)==string("unrelated"))
-        throw std::runtime_error("child not exist!");
-    bool* ifAdd;
-    *ifAdd=false;
-    recAddFather(childName, fatherName, ifAdd);
-    return *this;
-    
-        
-}
-void Tree::recAddFather(string childName,string fatherName, bool* ifAdd){
-    if(*ifAdd)
-        return;
     //the child was found
     if(this->name == string(childName)){
         //cant changing father name
         if(this->father != NULL)
             throw std::runtime_error("Father exists");
         Tree* father = new Tree(fatherName);
-        *ifAdd=true;
         this->father= father;
         if(this->rel==string("me"))
             this->father->rel="father";
@@ -40,44 +26,27 @@ void Tree::recAddFather(string childName,string fatherName, bool* ifAdd){
                 this->father->rel="great-"+this->rel;
         else if(this->rel.find("grandmother")!=this->rel.npos){
                 size_t pos=this->rel.find("grandmother");
-                char rela[pos];
-                this->rel.copy(rela,pos,0);
+                char rela[pos+1];
+                this->rel.copy(rela,pos+1,pos);
                 this->father->rel="great-";
-                for(int i=0; i<pos; i++)
-                    this->father->rel+=rela[i];
+                for(int i=0; i<pos+1; i++)
+                    this->rel+=rela[i];
                 this->father->rel+="grandfather";
         }
-        return;
-        // return *this;
+        return *this;
     }
     if(this->father != NULL)
-        this->father->recAddFather(childName,fatherName, ifAdd );
+        this->father->addFather(childName,fatherName);
     if(this->mother != NULL)
-        this->mother->recAddFather(childName,fatherName, ifAdd);
-    // return *this;
-    return;
-
+        this->mother->addFather(childName,fatherName);
+    return *this;
 }
 
 Tree& Tree::addMother(string childName,string motherName){
-    if(relation(childName)==string("unrelated"))
-        throw std::runtime_error("child not exist!");
-    bool* ifAdd;
-    *ifAdd=false;
-    recAddMother(childName, motherName, ifAdd);
-    return *this;
-   
-}
-
-void Tree::recAddMother(string childName,string motherName,bool* ifAdd){
-    if(*ifAdd)
-        return;
-    // return *this;
     if(this->name == string(childName)){
         if(this->mother != NULL)
             throw std::runtime_error("Mother exists");
         Tree* mother = new Tree(motherName);
-        *ifAdd=true;
         this->mother= mother;
         if(this->rel==string("me"))
             this->mother->rel="mother";
@@ -91,24 +60,23 @@ void Tree::recAddMother(string childName,string motherName,bool* ifAdd){
             this->mother->rel="great-grandmother";
         else if(this->rel.find("grandmother")!=this->rel.npos)
                 this->father->rel="great-"+this->rel;
-        else if(this->rel.find("grandfather")!=this->rel.npos){
+        else if(this->rel.find("grandmfather")!=this->rel.npos){
                 size_t pos=this->rel.find("grandfather");
-                char rela[pos];
-                this->rel.copy(rela,pos,0);
-                this->mother->rel="great-";
-                for(int i=0; i<pos; i++)
-                    this->mother->rel+=rela[i];
-                this->mother->rel+="grandmother";
+                char rela[pos+1];
+                this->rel.copy(rela,pos+1,pos);
+                this->father->rel="great-";
+                for(int i=0; i<pos+1; i++)
+                    this->rel+=rela[i];
+                this->father->rel+="grandmother";
         }
-        return;
     }
     if(this->father != NULL)
-        this->father->recAddMother(childName,motherName, ifAdd);
+        this->father->addMother(childName,motherName);
     if(this->mother != NULL)
-        this->mother->recAddMother(childName,motherName, ifAdd);
-    // return *this;
-    return;
+        this->mother->addMother(childName,motherName);
+    return *this;
 }
+
 // void Tree::setRelation(string relation){
 //     this->re=relation;
 // }
